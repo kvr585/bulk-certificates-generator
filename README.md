@@ -5,22 +5,26 @@
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Tests](https://img.shields.io/badge/tests-23%20passed-brightgreen.svg)]()
 
-A robust, production-grade asynchronous backend service for generating personalized PDF certificates in bulk. Designed with clean separation of concerns, per-recipient failure isolation, real-time progress tracking, and secure file downloads.
+An asynchronous backend service for generating personalized PDF certificates in bulk. Designed with clean separation of concerns, per-recipient failure isolation, real-time progress tracking, and secure file downloads.
 
 ---
 
 ## 1. Project Overview
 
-Organizations frequently need to issue hundreds or thousands of certificates after training events, bootcamps, or academic courses. Sending one API request per recipient creates network overhead, high latency, and fragile failure handling.
+The **Bulk Certificate Generator** provides an automated backend API that allows institutions and educators to issue personalized, verification-ready certificates to cohorts of participants in a single request.
 
-The **Bulk Certificate Generator** solves this by:
-1. Allowing the client to submit a single bulk generation request containing multiple recipients.
-2. Validating input data strictly using Pydantic.
-3. Queueing and processing generation asynchronously in the background.
-4. Rendering high-quality vector PDF certificates using ReportLab with custom recipient and event data.
-5. Tracking individual status (`PENDING`, `PROCESSING`, `COMPLETED`, `FAILED`) and overall job progress.
-6. Isolating failures: if one recipient has corrupt data or generation fails, all valid recipients still receive their certificates.
-7. Providing secure download endpoints with path traversal safeguards.
+### Problem Statement
+When an organization conducts a course or training event, certificates must be issued to dozens or hundreds of participants. Requiring the client to invoke one API call per recipient introduces latency, excessive HTTP overhead, and fragile failure scenarios where a single timeout or connection error interrupts generation.
+
+This system addresses that challenge by accepting batch generation requests, validating recipient information, generating PDF certificates in the background using a predefined template, and tracking status so generated certificates can be queried and retrieved cleanly.
+
+### Key Features
+- **Batch Submission:** Submit multiple recipients in a single API call instead of one request per certificate.
+- **Request Validation:** Strict Pydantic schemas validating names, emails, dates, and non-empty collections.
+- **Predefined Vector Template:** Built with ReportLab, featuring dynamic font auto-scaling, border styling, verification codes, and official seals.
+- **Fault Isolation:** A failure generating one recipient's certificate never prevents valid siblings from completing.
+- **Progress Tracking:** Real-time polling with status flags (`QUEUED`, `PROCESSING`, `COMPLETED`, `COMPLETED_WITH_ERRORS`, `FAILED`) and percentage progress.
+- **Secure Retrieval:** Safe PDF download endpoints with path-traversal protection.
 
 ---
 
